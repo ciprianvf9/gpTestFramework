@@ -11,13 +11,17 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"4fc17e6bef44c1bf60f52d3751bfefadc6b3ec5e"
+    password:"Fcv10951070",
+    token:"ToBeGenerated",
+    token_id:"ToBeRetreived"
   };
+
 
 var proxy_settings={
     host: 'web-proxy.atl.hp.com',
     port: '8088'
 }
+
 
 /*THIS IS THE FULL TEST*/
 console.log("___________________TEST IS STARTING_________________________");
@@ -64,8 +68,7 @@ let gp_GitTest={
               gp_GitTest.sleep(3000).then(function(response){
                 gp_GitTest.listRepo().then(function(response){
                   gp_GitTest.exportResults(gp_GitTest.loggerBucket);
-
-
+                    gp_GitTest.removeToken();
                 })
               })
 
@@ -225,11 +228,59 @@ let gp_GitTest={
         if (err) throw err;
         console.log('_________________Report has been exported successfully!_______________________');
       });
+    },
+    createToken:function(){
+      axios({
+            method: 'POST',
+            url: "https://api.github.com/authorizations",
+            data: {
+              "scopes": [
+            	"public_repo",
+            	"delete_repo"
+            ],
+            "note": "goProToken"
+            },
+            withCredentials: true,
+            auth: {
+              username: gitCredentials.username,
+              password: gitCredentials.password
+            },
+          })
+        .then(function (response) {
+          console.log("GENERATING NEW TOKEN");
+            gitCredentials.token=response.data.token;
+            gitCredentials.token_id=response.data.id;
+        }).catch(function (error) {
+          // console.log(error);
+        });
+    },
+    removeToken:function(){
+      axios({
+            method: 'DELETE',
+            url: "https://api.github.com/authorizations/"+gitCredentials.token_id,
+            withCredentials: true,
+            auth: {
+              username: gitCredentials.username,
+              password: gitCredentials.password
+            },
+          })
+        .then(function (response) {
+          console.log("REMOVING TOKEN");
+            gitCredentials.token=response.data.token;
+            gitCredentials.token_id=response.data.id;
+
+        }).catch(function (error) {
+        // console.log(error);
+        });
+
+
     }
-  };
+};
 
-gp_GitTest.validateAuthByToken();
-
+gp_GitTest.createToken();
+gp_GitTest.sleep(3000).then(function(response){
+  gp_GitTest.validateAuthByToken();
+});
 
 
 router.get('/', function(req, res, next) {

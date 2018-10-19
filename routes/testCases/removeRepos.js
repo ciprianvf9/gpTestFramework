@@ -11,8 +11,11 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"4fc17e6bef44c1bf60f52d3751bfefadc6b3ec5e"
+    password:"Fcv10951070",
+    token:"ToBeGenerated",
+    token_id:"ToBeRetreived"
   };
+
 
 var proxy_settings={
     host: 'web-proxy.atl.hp.com',
@@ -44,6 +47,7 @@ let removeRepos={
               console.log("_______________REMOVE FIRST REPO_______________");
               removeRepos.removeRepo('repo1').then(function (response) {
                 removeRepos.exportResults(removeRepos.loggerBucket);
+                  removeRepos.removeToken();
               });
 
       })
@@ -106,14 +110,57 @@ let removeRepos={
       if (err) throw err;
       console.log('_________________Report has been exported successfully!_______________________');
     });
-  }
+  },
+  createToken:function(){
+    axios({
+          method: 'POST',
+          url: "https://api.github.com/authorizations",
+          data: {
+            "scopes": [
+            "public_repo",
+            "delete_repo"
+          ],
+          "note": "goProToken"
+          },
+          withCredentials: true,
+          auth: {
+            username: gitCredentials.username,
+            password: gitCredentials.password
+          },
+        })
+      .then(function (response) {
+        console.log("GENERATING NEW TOKEN");
+          gitCredentials.token=response.data.token;
+          gitCredentials.token_id=response.data.id;
+      }).catch(function (error) {
+        // console.log(error);
+      });
+  },
+  removeToken:function(){
+    axios({
+          method: 'DELETE',
+          url: "https://api.github.com/authorizations/"+gitCredentials.token_id,
+          withCredentials: true,
+          auth: {
+            username: gitCredentials.username,
+            password: gitCredentials.password
+          },
+        })
+      .then(function (response) {
+        console.log("REMOVING TOKEN");
+          gitCredentials.token=response.data.token;
+          gitCredentials.token_id=response.data.id;
 
+      }).catch(function (error) {
+      // console.log(error);
+      });
+  }
 };
 
 
 
 
-
+removeRepos.createToken();
 removeRepos.sleep(3000).then(function(response){
   removeRepos.validateAuthByToken();
 })

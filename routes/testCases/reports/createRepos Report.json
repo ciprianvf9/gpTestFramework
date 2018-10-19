@@ -1,1 +1,1 @@
-[{"auth":"Authentication verification ","passed":"false"},{"AssertFail":{"generatedMessage":false,"name":"AssertionError [ERR_ASSERTION]","code":"ERR_ASSERTION","actual":401,"expected":"401","operator":"!="},"message":"Authentication verification ","passed":"false"}]
+[{"auth":"Authentication verification","passed":"true"},{"createRepo":"Your repo repo1 has been created","passed":"true"},{"createRepo":"Your repo repo2 has been created","passed":"true"},{"createRepo":"Your repo repo3 has been created","passed":"true"}]

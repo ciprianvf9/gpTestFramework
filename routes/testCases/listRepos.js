@@ -11,7 +11,9 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"4fc17e6bef44c1bf60f52d3751bfefadc6b3ec5e"
+    password:"Fcv10951070",
+    token:"ToBeGenerated",
+    token_id:"ToBeRetreived"
   };
 
 var proxy_settings={
@@ -43,6 +45,7 @@ let listRepos={
         listRepos.sleep(3000).then(function(response){
           listRepos.listRepo().then(function(response){
             listRepos.exportResults(listRepos.loggerBucket);
+              listRepos.removeToken();
 
           })
         })
@@ -129,10 +132,57 @@ let listRepos={
       if (err) throw err;
       console.log('_________________Report has been exported successfully!_______________________');
     });
+  },
+  createToken:function(){
+    axios({
+          method: 'POST',
+          url: "https://api.github.com/authorizations",
+          data: {
+            "scopes": [
+          	"public_repo",
+          	"delete_repo"
+          ],
+          "note": "goProToken"
+          },
+          withCredentials: true,
+          auth: {
+            username: gitCredentials.username,
+            password: gitCredentials.password
+          },
+        })
+      .then(function (response) {
+        console.log("GENERATING NEW TOKEN");
+          gitCredentials.token=response.data.token;
+          gitCredentials.token_id=response.data.id;
+      }).catch(function (error) {
+        // console.log(error);
+      });
+  },
+  removeToken:function(){
+    axios({
+          method: 'DELETE',
+          url: "https://api.github.com/authorizations/"+gitCredentials.token_id,
+          withCredentials: true,
+          auth: {
+            username: gitCredentials.username,
+            password: gitCredentials.password
+          },
+        })
+      .then(function (response) {
+        console.log("REMOVING TOKEN");
+          gitCredentials.token=response.data.token;
+          gitCredentials.token_id=response.data.id;
+
+      }).catch(function (error) {
+      // console.log(error);
+      });
+
+
   }
 
 };
 
-
-
-listRepos.validateAuthByToken();
+listRepos.createToken();
+listRepos.sleep(3000).then(function(response){
+  listRepos.validateAuthByToken();
+});
