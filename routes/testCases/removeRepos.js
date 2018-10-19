@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"9d8892ffc1caf7d8da462f53ed4cdae55d7e1cfc"
+    token:"4fc17e6bef44c1bf60f52d3751bfefadc6b3ec5e"
   };
 
 var proxy_settings={

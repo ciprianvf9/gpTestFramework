@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"9d8892ffc1caf7d8da462f53ed4cdae55d7e1cfc"
+    token:"4fc17e6bef44c1bf60f52d3751bfefadc6b3ec5e"
   };
 
 var proxy_settings={
@@ -82,7 +82,7 @@ let listRepos={
               }            
         }
 
-        //assert that the 2 remaining repositories are still present  - it's 3 instead of 2 because we have the repo with the code      
+        //assert that the 2 remaining repositories are still present  - it's 3 instead of 2 because we have the repo with the code
         try {           
           assert.equal(Object.keys(response.data).length,3, "The remaining two repositories are not in place!");                          
         } catch (e) {
