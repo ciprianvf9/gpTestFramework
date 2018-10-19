@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"c9134ca9e2056bd4bcf7d9742d390cced8a0cdf3"
+    token:"9d8892ffc1caf7d8da462f53ed4cdae55d7e1cfc"
   };
 
 var proxy_settings={
@@ -47,7 +47,7 @@ let createRepos={
 
             console.log("_______________CREATING THIRD REPO_______________");
             createRepos.createRepo("repo3").then(function (response) {
-              createRepos.exportResults(createRepos.loggerBucket);              
+              createRepos.exportResults(createRepos.loggerBucket);
             });
 
           });
@@ -56,10 +56,10 @@ let createRepos={
 
       })
       .catch(function (error) {
+        console.log("Auth failed! Please check the report");
         createRepos.loggerBucket.push({"auth":"Authentication verification ","passed":"false"});
-
         try {           
-           assert.notEqual(error.response.status, "404", "404-Not found");                      
+           assert.notEqual(error.response.status, "401", "Unauthorized");                      
         } catch (e) {
               if (e instanceof AssertionError)     {                
                 createRepos.loggerBucket.push({"AssertFail":e,
@@ -67,6 +67,8 @@ let createRepos={
                                                "passed":"false"});
               }    
         }
+        createRepos.exportResults(createRepos.loggerBucket);
+
 
       })
   },

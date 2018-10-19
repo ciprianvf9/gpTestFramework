@@ -1,1 +1,1 @@
-[{"auth":"Authentication verification","passed":"true"},{"AssertFail":{"generatedMessage":false,"name":"AssertionError [ERR_ASSERTION]","code":"ERR_ASSERTION","actual":404,"expected":"404","operator":"!="},"message":"Your repo does not exists","passed":"false"},{"removeRepo":"Your repo repo1 has not been removed","passed":"false"}]
+[{"auth":"Authentication verification","passed":"true"},{"removeRepo":"Your repo repo1 has been removed","passed":"true"}]

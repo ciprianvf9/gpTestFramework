@@ -11,7 +11,7 @@ var fs = require('fs');
 
 var gitCredentials={
     username:"ciprianvf9",
-    token:"c9134ca9e2056bd4bcf7d9742d390cced8a0cdf3"
+    token:"9d8892ffc1caf7d8da462f53ed4cdae55d7e1cfc"
   };
 
 var proxy_settings={
@@ -64,7 +64,7 @@ let gp_GitTest={
               gp_GitTest.sleep(3000).then(function(response){
                 gp_GitTest.listRepo().then(function(response){
                   gp_GitTest.exportResults(gp_GitTest.loggerBucket);
-                  console.log(gp_GitTest.loggerBucket);
+
 
                 })
               })
@@ -77,8 +77,18 @@ let gp_GitTest={
 
       })
       .catch(function (error) {
-        return(error);
-        p_GitTest.loggerBucket.push({"auth":"Authentication verification ","passed":"false"});
+        console.log("Auth failed! Please check the report");
+        gp_GitTest.loggerBucket.push({"auth":"Authentication verification ","passed":"false"});
+        try {           
+           assert.notEqual(error.response.status, "401", "Unauthorized");                      
+        } catch (e) {
+              if (e instanceof AssertionError)     {                
+                gp_GitTest.loggerBucket.push({"AssertFail":e,
+                                               "message":"Authentication verification ",
+                                               "passed":"false"});
+              }    
+        }
+        gp_GitTest.exportResults(gp_GitTest.loggerBucket);
       })
   },
   createRepo:function(repoName){
@@ -168,9 +178,9 @@ let gp_GitTest={
                 }            
           }
 
-          //assert that the 2 remaining repositories are still present
+          //assert that the 2 remaining repositories are still present  - it's 3 instead of 2 because we have the repo with the code
           try {           
-            assert.equal(Object.keys(response.data).length,2, "The remaining two repositories are not in place!");                          
+            assert.equal(Object.keys(response.data).length,3, "The remaining two repositories are not in place!");                          
           } catch (e) {
                 if (e instanceof AssertionError)     {                
                   gp_GitTest.loggerBucket.push({"AssertFail":e,
